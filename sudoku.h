@@ -93,7 +93,8 @@ private:
    * @param y_out The y position of the next uncolored cell.
    * @return bool Whether we were able to find an uncolored node.
    **/
-  static bool find_uncolored(int cur_board[9][9], int cur_x, int cur_y, int& x_out, int& y_out);
+  static bool find_uncolored(int cur_board[9][9], std::size_t cur_x, std::size_t cur_y,
+    std::size_t& x_out, std::size_t& y_out);
   /**
    * @brief Helper method for solving an instance of a Sudoku puzzle using the graph 9-colorability
    *        solution method. If a 9-coloring is found, the method will return true and overwrite
@@ -104,7 +105,7 @@ private:
    * @param cur_y The last y position considered on the game board. Defaults to 0.
    * @return bool Whether we were able to find a 9-coloring for the Sudoku board.
    **/
-  static bool color_node(int cur_board[9][9], int cur_x = 0, int cur_y = 0);
+  static bool color_node(int cur_board[9][9], std::size_t cur_x = 0, std::size_t cur_y = 0);
 
   /**
    * @brief The Sudoku board, which we are saving in memory.

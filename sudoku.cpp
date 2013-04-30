@@ -31,7 +31,7 @@ Sudoku::Sudoku() : board {}
 void Sudoku::parse_puzzle(std::istream& f)
 {
   //read n lines
-  for (int y = 0; y < 9; y++)
+  for (std::size_t y = 0; y < 9; y++)
   {
     std::string line;
     std::getline(f, line);
@@ -41,7 +41,7 @@ void Sudoku::parse_puzzle(std::istream& f)
     //each line must have n tokens
     if (tokens.size() == 9)
     {
-      for (int x = 0; x < 9; x++)
+      for (std::size_t x = 0; x < 9; x++)
       {
         std::string const& token = tokens[x];
 
@@ -95,9 +95,9 @@ void Sudoku::read_puzzle_from_file(std::istream& f)
 
 void Sudoku::read_puzzle_from_memory(int cur_board[9][9])
 {
-  for (int y = 0; y < 9; y++)
+  for (std::size_t y = 0; y < 9; y++)
   {
-    for (int x = 0; x < 9; x++)
+    for (std::size_t x = 0; x < 9; x++)
     {
       int a = cur_board[y][x];
 
@@ -122,9 +122,9 @@ void Sudoku::print(std::ostream& out)
 
 void Sudoku::dump(int cur_board[9][9], std::ostream& out)
 {
-  for (int y = 0; y < 9; y++)
+  for (std::size_t y = 0; y < 9; y++)
   {
-    for (int x = 0; x < 9; x++)
+    for (std::size_t x = 0; x < 9; x++)
     {
       if (x != 0)
       {
@@ -146,12 +146,13 @@ void Sudoku::dump(int cur_board[9][9], std::ostream& out)
   }
 }
 
-bool Sudoku::find_uncolored(int cur_board[9][9], int cur_x, int cur_y, int& x_out, int& y_out)
+bool Sudoku::find_uncolored(int cur_board[9][9], std::size_t cur_x, std::size_t cur_y,
+  std::size_t& x_out, std::size_t& y_out)
 {
   //find the next uncolored node from where we left off, so we don't need to re-examine any elements
-  for (int y = cur_y; y < 9; y++, cur_x = 0)
+  for (std::size_t y = cur_y; y < 9; y++, cur_x = 0)
   {
-    for (int x = cur_x; x < 9; x++)
+    for (std::size_t x = cur_x; x < 9; x++)
     {
       if (cur_board[y][x] == -1)
       {
@@ -165,21 +166,24 @@ bool Sudoku::find_uncolored(int cur_board[9][9], int cur_x, int cur_y, int& x_ou
   return false;
 }
 
-bool Sudoku::color_node(int cur_board[9][9], int cur_x, int cur_y)
+bool Sudoku::color_node(int cur_board[9][9], std::size_t cur_x, std::size_t cur_y)
 {
-  int uncolored_x, uncolored_y;
+  std::size_t uncolored_x, uncolored_y;
 
   //check if we can keep coloring nodes, or if we need to stop and assess the generated board
   if (find_uncolored(cur_board, cur_x, cur_y, uncolored_x, uncolored_y))
   {
+    std::uint_fast64_t colors = Validator::good_colors(cur_board, uncolored_x, uncolored_y);
+
     for (int i = 1; i <= 9; i++)
     {
-      if (Validator::is_good_color(cur_board, uncolored_x, uncolored_y, i))
+      //can we use this color here?
+      if ((colors & (1 << (i - 1))) != 0)
       {
         //clone the existing game board
         int new_board[9][9] = {};
 
-        for (int y = 0; y < 9; y++)
+        for (std::size_t y = 0; y < 9; y++)
         {
           memcpy(new_board[y], cur_board[y], sizeof(cur_board[y]));
         }
@@ -189,7 +193,7 @@ bool Sudoku::color_node(int cur_board[9][9], int cur_x, int cur_y)
         //if the coloring was successful, then return the colored graph indicate success
         if (color_node(new_board, uncolored_x, uncolored_y))
         {
-          for (int y = 0; y < 9; y++)
+          for (std::size_t y = 0; y < 9; y++)
           {
             memcpy(cur_board[y], new_board[y], sizeof(new_board[y]));
           }
