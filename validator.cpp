@@ -18,15 +18,14 @@
 
 #include "validator.h"
 
-//TODO: this is a bit hacky, and won't scale well (n >= 64)
-bool Validator::is_good_row(int cur_board[9][9], int y)
+bool Validator::is_good_row(int cur_board[9][9], std::size_t y)
 {
-  int mask = 0;
-  
+  std::uint_fast64_t mask = 0;
+
   for (int x = 0; x < 9; x++)
   {
     int a = cur_board[y][x];
-    
+
     //reject rows that are incomplete or have duplicates
     if ((a == -1) || ((mask & (1 << (a - 1))) != 0))
     {
@@ -37,19 +36,18 @@ bool Validator::is_good_row(int cur_board[9][9], int y)
       mask |= (1 << (a - 1));
     }
   }
-  
+
   return (mask == (1 << 9) - 1);
 }
 
-//TODO: this is a bit hacky, and won't scale well (n >= 64)
-bool Validator::is_good_column(int cur_board[9][9], int x)
+bool Validator::is_good_column(int cur_board[9][9], std::size_t x)
 {
-  int mask = 0;
-  
+  std::uint_fast64_t mask = 0;
+
   for (int y = 0; y < 9; y++)
   {
     int a = cur_board[y][x];
-    
+
     //reject cols that are incomplete or have duplicates
     if ((a == -1) || ((mask & (1 << (a - 1))) != 0))
     {
@@ -60,21 +58,20 @@ bool Validator::is_good_column(int cur_board[9][9], int x)
       mask |= (1 << (a - 1));
     }
   }
-  
+
   return (mask == (1 << 9) - 1);
 }
 
-//TODO: this is a bit hacky, and won't scale well (n >= 64)
-bool Validator::is_good_block(int cur_board[9][9], int x, int y)
+bool Validator::is_good_block(int cur_board[9][9], std::size_t x, std::size_t y)
 {
-  int mask = 0;
-  
+  std::uint_fast64_t mask = 0;
+
   for (int y_off = 0; y_off < 3; y_off++)
   {
     for (int x_off = 0; x_off < 3; x_off++)
     {
       int a = cur_board[y + y_off][x + x_off];
-      
+
       //reject blocks that are incomplete or have duplicates
       if ((a == -1) || ((mask & (1 << (a - 1))) != 0))
       {
@@ -86,11 +83,10 @@ bool Validator::is_good_block(int cur_board[9][9], int x, int y)
       }
     }
   }
-  
+
   return (mask == (1 << 9) - 1);
 }
 
-//TODO: remove outputs to stderr
 bool Validator::is_good_board(int cur_board[9][9])
 {
   for (int y = 0; y < 9; y++)
@@ -100,7 +96,7 @@ bool Validator::is_good_board(int cur_board[9][9])
       return false;
     }
   }
-  
+
   for (int x = 0; x < 9; x++)
   {
     if (!is_good_column(cur_board, x))
@@ -108,7 +104,7 @@ bool Validator::is_good_board(int cur_board[9][9])
       return false;
     }
   }
-  
+
   for (int x = 0; x < 3; x++)
   {
     for (int y = 0; y < 3; y++)
@@ -119,13 +115,13 @@ bool Validator::is_good_board(int cur_board[9][9])
       }
     }
   }
-  
+
   return true;
 }
 
-int Validator::partial_row(int cur_board[9][9], int y)
+std::uint_fast64_t Validator::partial_row(int cur_board[9][9], std::size_t y)
 {
-  int mask = 0;
+  std::uint_fast64_t mask = 0;
 
   for (int x = 0; x < 9; x++)
   {
@@ -141,9 +137,9 @@ int Validator::partial_row(int cur_board[9][9], int y)
   return mask;
 }
 
-int Validator::partial_column(int cur_board[9][9], int x)
+std::uint_fast64_t Validator::partial_column(int cur_board[9][9], std::size_t x)
 {
-  int mask = 0;
+  std::uint_fast64_t mask = 0;
 
   for (int y = 0; y< 9; y++)
   {
@@ -159,9 +155,9 @@ int Validator::partial_column(int cur_board[9][9], int x)
   return mask;
 }
 
-int Validator::partial_block(int cur_board[9][9], int x, int y)
+std::uint_fast64_t Validator::partial_block(int cur_board[9][9], std::size_t x, std::size_t y)
 {
-  int mask = 0;
+  std::uint_fast64_t mask = 0;
 
   for (int y_off = 0; y_off < 3; y_off++)
   {
@@ -180,20 +176,19 @@ int Validator::partial_block(int cur_board[9][9], int x, int y)
   return mask;
 }
 
-bool Validator::is_good_color(int cur_board[9][9], int x, int y, int i)
+bool Validator::is_good_color(int cur_board[9][9], std::size_t x, std::size_t y, int i)
 {
   int bit = (1 << (i - 1));
   int row_mask = partial_row(cur_board, y),
     col_mask = partial_column(cur_board, x),
     block_mask = partial_block(cur_board, (x / 3) * 3, (y / 3) * 3);
 
-  return (row_mask & bit) == 0 && (col_mask & bit) == 0 && (block_mask & bit) == 0;
+  return ((row_mask & bit) == 0 && (col_mask & bit) == 0 && (block_mask & bit) == 0);
 }
 
-//TODO: this is a bit hacky, and won't scale well (n >= 64)
-bool Validator::is_good_partial_row(int cur_board[9][9], int y)
+bool Validator::is_good_partial_row(int cur_board[9][9], std::size_t y)
 {
-  int mask = 0;
+  std::uint_fast64_t mask = 0;
 
   for (int x = 0; x < 9; x++)
   {
@@ -217,10 +212,9 @@ bool Validator::is_good_partial_row(int cur_board[9][9], int y)
   return true;
 }
 
-//TODO: this is a bit hacky, and won't scale well (n >= 64)
-bool Validator::is_good_partial_column(int cur_board[9][9], int x)
+bool Validator::is_good_partial_column(int cur_board[9][9], std::size_t x)
 {
-  int mask = 0;
+  std::uint_fast64_t mask = 0;
 
   for (int y = 0; y < 9; y++)
   {
@@ -244,10 +238,9 @@ bool Validator::is_good_partial_column(int cur_board[9][9], int x)
   return true;
 }
 
-//TODO: this is a bit hacky, and won't scale well (n >= 64)
-bool Validator::is_good_partial_block(int cur_board[9][9], int x, int y)
+bool Validator::is_good_partial_block(int cur_board[9][9], std::size_t x, std::size_t y)
 {
-  int mask = 0;
+  std::uint_fast64_t mask = 0;
 
   for (int y_off = 0; y_off < 3; y_off++)
   {

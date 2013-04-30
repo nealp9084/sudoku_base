@@ -19,6 +19,9 @@
 #ifndef VALIDATOR_H
 #define VALIDATOR_H
 
+#include <cstdint>
+#include <cstddef>
+
 class Validator
 {
 /*
@@ -31,12 +34,39 @@ class Validator
  * 9-colorability method, and many other solution methods.
  */
 public:
+  /**
+   * @brief Tells you whether a Sudoku puzzle has been solved.
+   *
+   * @param cur_board A Sudoku puzzle board.
+   * @return bool Whether that puzzle has been solved.
+   **/
   static bool is_good_board(int cur_board[9][9]);
 private:
-  //helpers for the above task
-  static bool is_good_row(int cur_board[9][9], int y);
-  static bool is_good_column(int cur_board[9][9], int x);
-  static bool is_good_block(int cur_board[9][9], int x, int y);
+  /**
+   * @brief Helper function for the above task.
+   *
+   * @param cur_board A Sudoku puzzle board.
+   * @param y The index for a particular row.
+   * @return bool Whether the 1*n row contains any repeated elements.
+   **/
+  static bool is_good_row(int cur_board[9][9], std::size_t y);
+  /**
+   * @brief Helper function for the above task.
+   *
+   * @param cur_board A Sudoku puzzle board.
+   * @param x The index for a particular column.
+   * @return bool Whether the n*1 column contains any repeated elements.
+   **/
+  static bool is_good_column(int cur_board[9][9], std::size_t x);
+  /**
+   * @brief Helper function for the above task.
+   *
+   * @param cur_board A Sudoku puzzle board.
+   * @param x The index for a particular starting row. Must be a multiple of 3.
+   * @param y The index for a particular starting column.  Must be a multiple of 3.
+   * @return bool Whether the sqrt(n)*sqrt(n) block contains any repeated elements.
+   **/
+  static bool is_good_block(int cur_board[9][9], std::size_t x, std::size_t y);
 
 /*
  * Check whether a specific node can be colored in a particular way. This validation will tell you
@@ -47,12 +77,43 @@ private:
  * function's name implies).
  */
 public:
-  static bool is_good_color(int cur_board[9][9], int x, int y, int i);
+  /**
+   * @brief Tells you whether you can color a certain node in a certain way (i.e., is it okay to use
+   *        a particular number in this Sudoku grid?)
+   *
+   * @param cur_board A Sudoku puzzle board.
+   * @param x The x position of the cell.
+   * @param y The y position of the cell.
+   * @param i The color you want to use (i.e., the number to assign the cell).
+   * @return bool Whether the node can be colored that way.
+   **/
+  static bool is_good_color(int cur_board[9][9], std::size_t x, std::size_t y, int i);
 private:
-  //helpers for the above task (they just tell you which colors have been used)
-  static int partial_row(int cur_board[9][9], int y);
-  static int partial_column(int cur_board[9][9], int x);
-  static int partial_block(int cur_board[9][9], int x, int y);
+  /**
+   * @brief Helper function for the above task. Tells you which colors have been used.
+   *
+   * @param cur_board A Sudoku puzzle board.
+   * @param y The index for a particular row.
+   * @return int Which colors are used by that particular 1*n row.
+   **/
+  static std::uint_fast64_t partial_row(int cur_board[9][9], std::size_t y);
+  /**
+   * @brief Helper function for the above task. Tells you which colors have been used.
+   *
+   * @param cur_board A Sudoku puzzle board.
+   * @param x The index for a particular column.
+   * @return int Which colors are used by that particular n*1 column.
+   **/
+  static std::uint_fast64_t partial_column(int cur_board[9][9], std::size_t x);
+  /**
+   * @brief Helper function for the above task. Tells you which colors have been used.
+   *
+   * @param cur_board A Sudoku puzzle board.
+   * @param x The index for a particular starting row. Must be a multiple of 3.
+   * @param y The index for a particular starting column.  Must be a multiple of 3.
+   * @return int Which colors are used by that particular sqrt(n)*sqrt(n) block.
+   **/
+  static std::uint_fast64_t partial_block(int cur_board[9][9], std::size_t x, std::size_t y);
 
 /*
  * A partially-completed board is defined as "good" if every row has the digits 1-9 used at most
@@ -64,12 +125,39 @@ private:
  * many other solution methods.
  */
 public:
+  /**
+   * @brief Tells you if a given Sudoku board has a solution (if it has no repeats, then it does).
+   *
+   * @param cur_board A Sudoku puzzle board.
+   * @return bool Whether the given board has any solutions.
+   **/
   static bool is_good_partial_board(int cur_board[9][9]);
 private:
-  //helpers for the above task
-  static bool is_good_partial_row(int cur_board[9][9], int y);
-  static bool is_good_partial_column(int cur_board[9][9], int x);
-  static bool is_good_partial_block(int cur_board[9][9], int x, int y);
+  /**
+   * @brief Helper function for the above task.
+   *
+   * @param cur_board A Sudoku puzzle board.
+   * @param y The index for a particular row.
+   * @return bool Whether the given 1*n row has any repeated elements.
+   **/
+  static bool is_good_partial_row(int cur_board[9][9], std::size_t y);
+  /**
+   * @brief Helper function for the above task.
+   *
+   * @param cur_board A Sudoku puzzle board.
+   * @param x The index for a particular column.
+   * @return bool Whether the given n*1 column has any repeated elements.
+   **/
+  static bool is_good_partial_column(int cur_board[9][9], std::size_t x);
+  /**
+   * @brief Helper function for the above task.
+   *
+   * @param cur_board A Sudoku puzzle board.
+   * @param x The index for a particular starting row. Must be a multiple of 3.
+   * @param y The index for a particular starting column.  Must be a multiple of 3.
+   * @return bool Whether the given sqrt(n)*sqrt(n) block has any repeated elements.
+   **/
+  static bool is_good_partial_block(int cur_board[9][9], std::size_t x, std::size_t y);
 };
 
 #endif // VALIDATOR_H
