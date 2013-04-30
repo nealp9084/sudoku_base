@@ -97,7 +97,19 @@ void Sudoku::read_puzzle_from_memory(int cur_board[9][9])
 {
   for (int y = 0; y < 9; y++)
   {
-    memcpy(this->board[y], cur_board[y], sizeof(cur_board[y]));
+    for (int x = 0; x < 9; x++)
+    {
+      int a = cur_board[y][x];
+
+      if ((a >= 1 && a <= 9) || (a == -1))
+      {
+        this->board[y][x] = a;
+      }
+      else
+      {
+        throw std::runtime_error("Invalid value in board");
+      }
+    }
   }
 
   this->validate();
