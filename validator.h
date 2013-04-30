@@ -21,35 +21,55 @@
 
 class Validator
 {
+/*
+ * A board is defined as "good" if every row has the digits 1-9 used exactly once, if every column
+ * has the digits 1-9 used exactly once, and if every 3x3 block has the digits 1-9 used exactly
+ * once. Basically, this function is just checking whether the given board is a solution to some
+ * Sudoku puzzle.
+ * 
+ * This function can be used when solving a Sudoku puzzle with the brute force method, the graph
+ * 9-colorability method, and many other solution methods.
+ */
+public:
+  static bool is_good_board(int cur_board[9][9]);
 private:
-  //helpers for validation of a complete board
+  //helpers for the above task
   static bool is_good_row(int cur_board[9][9], int y);
   static bool is_good_column(int cur_board[9][9], int x);
   static bool is_good_block(int cur_board[9][9], int x, int y);
 
+/*
+ * Check whether a specific node can be colored in a particular way. This validation will tell you
+ * whether you can use a specific color, provided that it does not appear in the same row, in the
+ * same column, or the same 3x3 block.
+ * 
+ * This function is used when solving a Sudoku puzzle with the graph 9-coloring method (as the
+ * function's name implies).
+ */
 public:
-  //validation of a complete board
-  static bool is_good_board(int cur_board[9][9]);
-
+  static bool is_good_color(int cur_board[9][9], int x, int y, int i);
 private:
-  //helpers for repeated element check
+  //helpers for the above task (they just tell you which colors have been used)
   static int partial_row(int cur_board[9][9], int y);
   static int partial_column(int cur_board[9][9], int x);
   static int partial_block(int cur_board[9][9], int x, int y);
 
+/*
+ * A partially-completed board is defined as "good" if every row has the digits 1-9 used at most
+ * once, if every column has the digits 1-9 used at most once, and if every 3x3 block has the digits
+ * 1-9 used at most once. Basically, this function is just checking whether the given board is a
+ * solvable Sudoku puzzle.
+ * 
+ * This function can be used when solving a Sudoku puzzle with the graph 9-colorability method, and
+ * many other solution methods.
+ */
 public:
-  //repeated element check
-  static bool is_good_pivot(int cur_board[9][9], int x, int y, int i);
-
+  static bool is_good_partial_board(int cur_board[9][9]);
 private:
-  //helpers for validation of a partially-completed board
+  //helpers for the above task
   static bool is_good_partial_row(int cur_board[9][9], int y);
   static bool is_good_partial_column(int cur_board[9][9], int x);
   static bool is_good_partial_block(int cur_board[9][9], int x, int y);
-
-public:
-  //validation of a partially-completed board
-  static bool is_good_partial_board(int cur_board[9][9]);
 };
 
 #endif // VALIDATOR_H

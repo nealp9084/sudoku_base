@@ -23,7 +23,6 @@
 #include <QtCore/QStringList>
 #include <QtCore/QTextStream>
 #include <stdexcept>
-#include <iostream>
 
 Sudoku::Sudoku() : board {}
 {
@@ -80,19 +79,28 @@ void Sudoku::validate()
   }
 }
 
-void Sudoku::read_puzzle(FILE* f)
+void Sudoku::read_puzzle_from_file(FILE* f)
 {
   this->parse_puzzle(f);
   this->validate();
 }
 
-void Sudoku::print()
+void Sudoku::read_puzzle_from_memory(int cur_board[9][9])
 {
-  std::cout << "Here's what I've got." << std::endl;
-  this->dump(this->board);
+  for (int y = 0; y < 9; y++)
+  {
+    memcpy(this->board[y], cur_board[y], sizeof(cur_board[y]));
+  }
+
+  this->validate();
 }
 
-void Sudoku::dump(int cur_board[9][9])
+void Sudoku::print(std::ostream& out)
+{
+  this->dump(this->board, out);
+}
+
+void Sudoku::dump(int cur_board[9][9], std::ostream& out)
 {
   for (int y = 0; y < 9; y++)
   {
@@ -100,22 +108,29 @@ void Sudoku::dump(int cur_board[9][9])
     {
       if (x != 0)
       {
-        std::cout << ' ';
+        out << ' ';
       }
 
-      std::cout << cur_board[y][x];
-    }
-    std::cout << std::endl;
-  }
+      int a = cur_board[y][x];
 
-  std::cout << std::endl;
+      if (a == -1)
+      {
+        out << '?';
+      }
+      else
+      {
+        out << a;
+      }
+    }
+    out << std::endl;
+  }
 }
 
 bool Sudoku::find_uncolored(int cur_board[9][9], int cur_x, int cur_y, int& x_out, int& y_out)
 {
-  for (int y = cur_y; y < 9; y++)
+  for (int y = cur_y; y < 9; y++, cur_x = 0)
   {
-    for (int x = (y == cur_y ? cur_x : 0); x < 9; x++)
+    for (int x = cur_x; x < 9; x++)
     {
       if (cur_board[y][x] == -1)
       {
@@ -129,48 +144,50 @@ bool Sudoku::find_uncolored(int cur_board[9][9], int cur_x, int cur_y, int& x_ou
   return false;
 }
 
-void Sudoku::color_node(int cur_board[9][9], int cur_x, int cur_y)
+bool Sudoku::color_node(int cur_board[9][9], int cur_x, int cur_y)
 {
-  int pivot_x, pivot_y;
+  int uncolored_x, uncolored_y;
 
-  //check if we can keep branching off, or if we need to stop and assess the generated board
-  if (find_uncolored(cur_board, cur_x, cur_y, pivot_x, pivot_y))
+  //check if we can keep coloring nodes, or if we need to stop and assess the generated board
+  if (find_uncolored(cur_board, cur_x, cur_y, uncolored_x, uncolored_y))
   {
     for (int i = 1; i <= 9; i++)
     {
-      if (Validator::is_good_pivot(cur_board, pivot_x, pivot_y, i))
+      if (Validator::is_good_color(cur_board, uncolored_x, uncolored_y, i))
       {
+        //clone the existing game board
         int new_board[9][9] = {};
+
         for (int y = 0; y < 9; y++)
         {
           memcpy(new_board[y], cur_board[y], sizeof(cur_board[y]));
         }
 
-        new_board[pivot_y][pivot_x] = i;
-        color_node(new_board, pivot_x, pivot_y);
+        new_board[uncolored_y][uncolored_x] = i;
+
+        //if the coloring was successful, then return the colored graph indicate success
+        if (color_node(new_board, uncolored_x, uncolored_y))
+        {
+          for (int y = 0; y < 9; y++)
+          {
+            memcpy(cur_board[y], new_board[y], sizeof(new_board[y]));
+          }
+
+          return true;
+        }
       }
     }
   }
   else
   {
-    //found a solution
-    if (Validator::is_good_board(cur_board))
-    {
-      std::cout << "We've got a winner!" << std::endl;
-      dump(cur_board);
-      exit(0);
-    }
-    else
-    {
-    }
-    
-    return;
+    //the board is completely colored, so we can't color any more nodes, but is it a valid coloring?
+    return Validator::is_good_board(cur_board);
   }
 }
 
-void Sudoku::solve_colorability_style()
+bool Sudoku::solve_colorability_style()
 {
-  color_node(this->board);
+  return color_node(this->board);
 }
 
 Sudoku::~Sudoku()

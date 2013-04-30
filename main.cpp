@@ -17,12 +17,27 @@
  */
 
 #include "sudoku.h"
+#include <iostream>
 
 int main(int argc, char* argv[])
 {
   Sudoku puzzle;
-  puzzle.read_puzzle();
-  puzzle.print();
-  puzzle.solve_colorability_style();
+  puzzle.read_puzzle_from_file();
+
+  std::cout << "Here's the current state of the board." << std::endl;
+  puzzle.print(std::cout);
+
+  std::cout << "Attempting to solve the puzzle..." << std::endl;
+
+  if (puzzle.solve_colorability_style())
+  {
+    std::cout << "A solution was found!" << std::endl;
+    puzzle.print(std::cout);
+  }
+  else
+  {
+    std::cout << "No solutions exist." << std::endl;
+  }
+
   return 0;
 }

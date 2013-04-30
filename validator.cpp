@@ -180,7 +180,7 @@ int Validator::partial_block(int cur_board[9][9], int x, int y)
   return mask;
 }
 
-bool Validator::is_good_pivot(int cur_board[9][9], int x, int y, int i)
+bool Validator::is_good_color(int cur_board[9][9], int x, int y, int i)
 {
   int bit = (1 << (i - 1));
   int row_mask = partial_row(cur_board, y),
