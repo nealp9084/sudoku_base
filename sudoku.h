@@ -19,7 +19,7 @@
 #ifndef SUDOKU_H
 #define SUDOKU_H
 
-#include <cstdio>
+#include <iostream>
 #include <streambuf>
 
 class Sudoku
@@ -28,21 +28,20 @@ public:
   Sudoku();
   virtual ~Sudoku();
 
-  //read in the puzzle from a given FILE* (this defaults to standard input)
-  void read_puzzle_from_file(FILE* f = stdin);
+  void read_puzzle_from_file(std::istream& f = std::cin);
 
   //read in the puzzle from a nxn grid somewhere in memory
   void read_puzzle_from_memory(int cur_board[9][9]);
 
   //print what we have read in
-  void print(std::ostream& out);
+  void print(std::ostream& out = std::cout);
 
   //attempt to solve the puzzle
   bool solve_colorability_style();
 
 private:
   //helpers for parsing a puzzle from a file and checking whether it is solvable
-  void parse_puzzle(FILE* f);
+  void parse_puzzle(std::istream& f);
   void validate();
 
   //helper for printing out the board

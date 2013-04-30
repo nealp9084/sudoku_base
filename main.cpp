@@ -25,14 +25,14 @@ int main(int argc, char* argv[])
   puzzle.read_puzzle_from_file();
 
   std::cout << "Here's the current state of the board." << std::endl;
-  puzzle.print(std::cout);
+  puzzle.print();
 
   std::cout << "Attempting to solve the puzzle..." << std::endl;
 
   if (puzzle.solve_colorability_style())
   {
     std::cout << "A solution was found!" << std::endl;
-    puzzle.print(std::cout);
+    puzzle.print();
   }
   else
   {

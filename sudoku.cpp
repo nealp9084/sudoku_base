@@ -19,48 +19,56 @@
 #include "sudoku.h"
 #include "validator.h"
 
-#include <QtCore/QString>
-#include <QtCore/QStringList>
-#include <QtCore/QTextStream>
 #include <stdexcept>
+#include <vector>
+#include <algorithm>
+#include <boost/algorithm/string.hpp>
 
 Sudoku::Sudoku() : board {}
 {
 }
 
-void Sudoku::parse_puzzle(FILE* f)
+void Sudoku::parse_puzzle(std::istream& f)
 {
-  QTextStream file(f);
-
-  //read 9 lines
+  //read n lines
   for (int y = 0; y < 9; y++)
   {
-    QString line = file.readLine();
-    QStringList tokens = line.split(' ');
+    std::string line;
+    std::getline(f, line);
+    std::vector<std::string> tokens;
+    boost::split(tokens, line, boost::is_any_of(" "));
 
-    //each line must have 9 tokens: [1-9] or ?
+    //each line must have n tokens
     if (tokens.size() == 9)
     {
       for (int x = 0; x < 9; x++)
       {
-        bool ok = false;
-        int value = tokens[x].toInt(&ok);
+        std::string const& token = tokens[x];
 
-        if (ok)
+        try
         {
-          //integer tokens must be between 1 and 9
+          int value = std::stoi(token);
+
+          //integer tokens must be between 1 and n, and unknowns should be question marks
           if (value < 1 || value > 9)
+          {
             throw std::runtime_error("Invalid value in board");
+          }
           else
+          {
             this->board[y][x] = value;
+          }
         }
-        else if (tokens[x] == "?")
+        catch (std::invalid_argument &)
         {
-          this->board[y][x] = -1;
-        }
-        else
-        {
-          throw std::runtime_error("Invalid character in board");
+          if (token == "?")
+          {
+            this->board[y][x] = -1;
+          }
+          else
+          {
+            throw std::runtime_error("Invalid character in board");
+          }
         }
       }
     }
@@ -79,7 +87,7 @@ void Sudoku::validate()
   }
 }
 
-void Sudoku::read_puzzle_from_file(FILE* f)
+void Sudoku::read_puzzle_from_file(std::istream& f)
 {
   this->parse_puzzle(f);
   this->validate();
