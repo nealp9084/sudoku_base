@@ -47,7 +47,7 @@ private:
    *
    * @param cur_board A Sudoku puzzle board.
    * @param y The index for a particular row.
-   * @return bool Whether the 1*n row contains any repeated elements.
+   * @return bool Whether the 1*n row contains no repeated or undetermined elements.
    **/
   static bool is_good_row(int cur_board[9][9], std::size_t y);
   /**
@@ -55,7 +55,7 @@ private:
    *
    * @param cur_board A Sudoku puzzle board.
    * @param x The index for a particular column.
-   * @return bool Whether the n*1 column contains any repeated elements.
+   * @return bool Whether the n*1 column contains no repeated or undetermined elements.
    **/
   static bool is_good_column(int cur_board[9][9], std::size_t x);
   /**
@@ -64,7 +64,7 @@ private:
    * @param cur_board A Sudoku puzzle board.
    * @param x The index for a particular starting row. Must be a multiple of 3.
    * @param y The index for a particular starting column.  Must be a multiple of 3.
-   * @return bool Whether the sqrt(n)*sqrt(n) block contains any repeated elements.
+   * @return bool Whether the sqrt(n)*sqrt(n) block contains no repeated or undetermined elements.
    **/
   static bool is_good_block(int cur_board[9][9], std::size_t x, std::size_t y);
 
