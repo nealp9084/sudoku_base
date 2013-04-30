@@ -148,6 +148,7 @@ void Sudoku::dump(int cur_board[9][9], std::ostream& out)
 
 bool Sudoku::find_uncolored(int cur_board[9][9], int cur_x, int cur_y, int& x_out, int& y_out)
 {
+  //find the next uncolored node from where we left off, so we don't need to re-examine any elements
   for (int y = cur_y; y < 9; y++, cur_x = 0)
   {
     for (int x = cur_x; x < 9; x++)
