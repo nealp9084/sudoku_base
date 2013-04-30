@@ -79,7 +79,7 @@ private:
 public:
   /**
    * @brief Tells you whether you can color a certain node in a certain way (i.e., is it okay to use
-   *        a particular number in this Sudoku grid?)
+   *        a particular number in this Sudoku cell?)
    *
    * @param cur_board A Sudoku puzzle board.
    * @param x The x position of the cell.
@@ -88,6 +88,19 @@ public:
    * @return bool Whether the node can be colored that way.
    **/
   static bool is_good_color(int cur_board[9][9], std::size_t x, std::size_t y, int i);
+
+  /**
+   * @brief Tells you which colors a certain node may use (i.e., which numbers can I put in this
+   *        Sudoku cell?). The result is encoded into a 64-bit unsigned integer, with the least
+   *        significant bit corresponding to whether you can use the color 1, the next bit
+   *        corresponding to whether you can use the number 2, and so on.
+   *
+   * @param cur_board A Sudoku puzzle board.
+   * @param x The x position of the cell.
+   * @param y The y position of the cell.
+   * @return uint_fast64_t The various colors (numbers) you may use, encoded using the above scheme.
+   **/
+  static std::uint_fast64_t good_colors(int cur_board[9][9], std::size_t x, std::size_t y);
 private:
   /**
    * @brief Helper function for the above task. Tells you which colors have been used.
@@ -96,7 +109,7 @@ private:
    * @param y The index for a particular row.
    * @return int Which colors are used by that particular 1*n row.
    **/
-  static std::uint_fast64_t partial_row(int cur_board[9][9], std::size_t y);
+  static std::uint_fast64_t partial_row_colors(int cur_board[9][9], std::size_t y);
   /**
    * @brief Helper function for the above task. Tells you which colors have been used.
    *
@@ -104,7 +117,7 @@ private:
    * @param x The index for a particular column.
    * @return int Which colors are used by that particular n*1 column.
    **/
-  static std::uint_fast64_t partial_column(int cur_board[9][9], std::size_t x);
+  static std::uint_fast64_t partial_column_colors(int cur_board[9][9], std::size_t x);
   /**
    * @brief Helper function for the above task. Tells you which colors have been used.
    *
@@ -113,7 +126,7 @@ private:
    * @param y The index for a particular starting column.  Must be a multiple of 3.
    * @return int Which colors are used by that particular sqrt(n)*sqrt(n) block.
    **/
-  static std::uint_fast64_t partial_block(int cur_board[9][9], std::size_t x, std::size_t y);
+  static std::uint_fast64_t partial_block_colors(int cur_board[9][9], std::size_t x, std::size_t y);
 
 /*
  * A partially-completed board is defined as "good" if every row has the digits 1-9 used at most

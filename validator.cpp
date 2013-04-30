@@ -119,7 +119,7 @@ bool Validator::is_good_board(int cur_board[9][9])
   return true;
 }
 
-std::uint_fast64_t Validator::partial_row(int cur_board[9][9], std::size_t y)
+std::uint_fast64_t Validator::partial_row_colors(int cur_board[9][9], std::size_t y)
 {
   std::uint_fast64_t mask = 0;
 
@@ -137,7 +137,7 @@ std::uint_fast64_t Validator::partial_row(int cur_board[9][9], std::size_t y)
   return mask;
 }
 
-std::uint_fast64_t Validator::partial_column(int cur_board[9][9], std::size_t x)
+std::uint_fast64_t Validator::partial_column_colors(int cur_board[9][9], std::size_t x)
 {
   std::uint_fast64_t mask = 0;
 
@@ -155,7 +155,7 @@ std::uint_fast64_t Validator::partial_column(int cur_board[9][9], std::size_t x)
   return mask;
 }
 
-std::uint_fast64_t Validator::partial_block(int cur_board[9][9], std::size_t x, std::size_t y)
+std::uint_fast64_t Validator::partial_block_colors(int cur_board[9][9], std::size_t x, std::size_t y)
 {
   std::uint_fast64_t mask = 0;
 
@@ -179,11 +179,20 @@ std::uint_fast64_t Validator::partial_block(int cur_board[9][9], std::size_t x, 
 bool Validator::is_good_color(int cur_board[9][9], std::size_t x, std::size_t y, int i)
 {
   int bit = (1 << (i - 1));
-  int row_mask = partial_row(cur_board, y),
-    col_mask = partial_column(cur_board, x),
-    block_mask = partial_block(cur_board, (x / 3) * 3, (y / 3) * 3);
+  std::uint_fast64_t row_mask = partial_row_colors(cur_board, y),
+    col_mask = partial_column_colors(cur_board, x),
+    block_mask = partial_block_colors(cur_board, (x / 3) * 3, (y / 3) * 3);
 
   return ((row_mask & bit) == 0 && (col_mask & bit) == 0 && (block_mask & bit) == 0);
+}
+
+std::uint_fast64_t Validator::good_colors(int cur_board[9][9], std::size_t x, std::size_t y)
+{
+  std::uint_fast64_t row_mask = partial_row_colors(cur_board, y),
+    col_mask = partial_column_colors(cur_board, x),
+    block_mask = partial_block_colors(cur_board, (x / 3) * 3, (y / 3) * 3);
+
+  return (~(row_mask | col_mask | block_mask)) & ((1 << 9) - 1);
 }
 
 bool Validator::is_good_partial_row(int cur_board[9][9], std::size_t y)
