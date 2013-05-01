@@ -16,28 +16,27 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "sudoku.h"
-#include <iostream>
+#ifndef GRID_H
+#define GRID_H
 
-int main(int argc, char* argv[])
+#include <boost/multi_array.hpp>
+
+class Grid
 {
-  Sudoku puzzle;
-  puzzle.read_puzzle_from_file();
+public:
+  Grid(std::size_t n);
+  Grid(Grid const& grid);
+  Grid& operator =(Grid const& grid);
+  virtual ~Grid();
 
-  std::cout << "Here's the current state of the board." << std::endl;
-  puzzle.print();
+  int get(std::size_t x, std::size_t y) const;
+  void set(std::size_t x, std::size_t y, int i);
 
-  std::cout << "Attempting to solve the puzzle..." << std::endl;
+  std::size_t n() const;
 
-  if (puzzle.solve_colorability_style())
-  {
-    std::cout << "A solution was found!" << std::endl;
-    puzzle.print();
-  }
-  else
-  {
-    std::cout << "No solutions exist." << std::endl;
-  }
+private:
+  boost::multi_array<int, 2> matrix;
+  std::size_t dim;
+};
 
-  return 0;
-}
+#endif // GRID_H

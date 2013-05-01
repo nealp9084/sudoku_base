@@ -16,28 +16,38 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "sudoku.h"
-#include <iostream>
+#include "grid.h"
 
-int main(int argc, char* argv[])
+Grid::Grid(std::size_t n) : matrix(boost::extents[n][n]), dim(n)
 {
-  Sudoku puzzle;
-  puzzle.read_puzzle_from_file();
+}
 
-  std::cout << "Here's the current state of the board." << std::endl;
-  puzzle.print();
+Grid::Grid(const Grid& grid) : matrix(grid.matrix), dim(grid.dim)
+{
+}
 
-  std::cout << "Attempting to solve the puzzle..." << std::endl;
+Grid& Grid::operator=(const Grid& grid)
+{
+  this->matrix = grid.matrix;
+  this->dim = grid.dim;
+  return *this;
+}
 
-  if (puzzle.solve_colorability_style())
-  {
-    std::cout << "A solution was found!" << std::endl;
-    puzzle.print();
-  }
-  else
-  {
-    std::cout << "No solutions exist." << std::endl;
-  }
+int Grid::get(std::size_t x, std::size_t y) const
+{
+  return this->matrix[y][x];
+}
 
-  return 0;
+void Grid::set(std::size_t x, std::size_t y, int i)
+{
+  this->matrix[y][x] = i;
+}
+
+std::size_t Grid::n() const
+{
+  return this->dim;
+}
+
+Grid::~Grid()
+{
 }

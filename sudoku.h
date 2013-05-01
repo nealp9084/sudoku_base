@@ -1,17 +1,17 @@
 /*
  *  Sudoku Base - a library for solving Sudoku puzzles
  *  Copyright (C) 2013  Neal Patel <nealp9084@gmail.com>
- * 
+ *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
- * 
+ *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
- * 
+ *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -21,6 +21,8 @@
 
 #include <iostream>
 #include <streambuf>
+
+#include "grid.h"
 
 class Sudoku
 {
@@ -44,7 +46,7 @@ public:
    * @param cur_board A n*n Sudoku board, with integers [1-n] as the known values, and -1 for
    *                  unknown values.
    **/
-  void read_puzzle_from_memory(int cur_board[9][9]);
+  void read_puzzle_from_memory(Grid& cur_grid);
 
   /**
    * @brief Print the current state of the board to some output stream
@@ -81,7 +83,7 @@ private:
    * @param cur_board A Sudoku board, either an incomplete or complete puzzle.
    * @param out An output stream.
    **/
-  static void dump(int cur_board[9][9], std::ostream& out);
+  static void dump(Grid& cur_grid, std::ostream& out);
 
   /**
    * @brief Helper method for finding the next unmarked (i.e., undetermined) Sudoku grid.
@@ -93,7 +95,7 @@ private:
    * @param y_out The y position of the next uncolored cell.
    * @return bool Whether we were able to find an uncolored node.
    **/
-  static bool find_uncolored(int cur_board[9][9], std::size_t cur_x, std::size_t cur_y,
+  static bool find_uncolored(Grid& cur_grid, std::size_t cur_x, std::size_t cur_y,
     std::size_t& x_out, std::size_t& y_out);
   /**
    * @brief Helper method for solving an instance of a Sudoku puzzle using the graph 9-colorability
@@ -105,12 +107,12 @@ private:
    * @param cur_y The last y position considered on the game board. Defaults to 0.
    * @return bool Whether we were able to find a 9-coloring for the Sudoku board.
    **/
-  static bool color_node(int cur_board[9][9], std::size_t cur_x = 0, std::size_t cur_y = 0);
+  static bool color_node(Grid& cur_grid, std::size_t cur_x = 0, std::size_t cur_y = 0);
 
   /**
    * @brief The Sudoku board, which we are saving in memory.
    **/
-  int board[9][9];
+  Grid grid;
 };
 
 #endif // SUDOKU_H
