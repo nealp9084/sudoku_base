@@ -21,21 +21,78 @@
 
 #include <boost/multi_array.hpp>
 
+/**
+ * @brief A class that represents the state of a Sudoku board
+ * 
+ * The Grid class represents the current state of a particular Sudoku board. It is essentially a
+ * wrapper around a square, 2D array, except that it does not need to be defined at compile-time.
+ * The grid is stored in an underlying boost::multi_array<int, 2>, and it has all the typical
+ * accessors: set an element, get an element, get the grid size, and set the grid size.
+ **/
 class Grid
 {
 public:
+  /**
+   * @brief Construct a n*n grid
+   *
+   * @param n Side length of the square, 2D array.
+   **/
   Grid(std::size_t n);
+  /**
+   * @brief Copy-construct a grid from another grid
+   *
+   * @param grid The other grid.
+   **/
   Grid(Grid const& grid);
-  Grid& operator =(Grid const& grid);
   virtual ~Grid();
 
+  /**
+   * @brief Copy another grid
+   *
+   * @param grid The other grid.
+   * @return Grid& The current grid.
+   **/
+  Grid& operator =(Grid const& grid);
+
+  /**
+   * @brief Resize the existing grid so that it is an n*n grid
+   *
+   * @param n Side length of the square, 2D array.
+   **/
+  void reset(std::size_t n);
+
+  /**
+   * @brief Get the value of a specific element
+   *
+   * @param x The X-index of the element.
+   * @param y The Y-index of the element.
+   * @return int The value of the element.
+   **/
   int get(std::size_t x, std::size_t y) const;
+  /**
+   * @brief Set the value of a specific element
+   *
+   * @param x The X-index of the element.
+   * @param y The Y-index of the element.
+   * @param i The new value of the element.
+   **/
   void set(std::size_t x, std::size_t y, int i);
 
+  /**
+   * @brief The side length of the square, 2D array
+   *
+   * @return std::size_t The side-length.
+   **/
   std::size_t n() const;
 
 private:
+  /**
+   * @brief The underlying grid.
+   **/
   boost::multi_array<int, 2> matrix;
+  /**
+   * @brief The side length of the grid.
+   **/
   std::size_t dim;
 };
 

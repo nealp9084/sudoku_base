@@ -19,14 +19,29 @@
 #ifndef SUDOKU_H
 #define SUDOKU_H
 
-#include <iostream>
 #include <streambuf>
+#include <string>
+#include <vector>
 
 #include "grid.h"
 
+/**
+ * @brief This is a class designed to quickly and easily solve puzzles for the popular game Sudoku.
+ * 
+ * If you want to solve a puzzle, first create a Sudoku object. Next, you have to tell the class
+ * what it is working with: you have to provide a puzzle to the object. You can do this by calling
+ * either read_puzzle_from_file() or read_puzzle_from_string(). Once you do that, you should check
+ * to make sure the puzzle was read in correctly by calling good(). Now that the class knows what it
+ * is dealing with, it can start solving the puzzle: just call one of the solver methods. These
+ * methods include: solve_colorability_style() and solve_bruteforce_style(). Once you call one of
+ * those methods, the solution to the puzzle will be saved in the object.
+ **/
 class Sudoku
 {
 public:
+  /**
+   * @brief Constructor for a Sudoku instance.
+   **/
   Sudoku();
   virtual ~Sudoku();
 
@@ -34,26 +49,29 @@ public:
    * @brief Read in the puzzle from a given FILE* (this defaults to standard input) and store it in
    *        memory.
    *
-   * @param f The file from which we should read the n*n Sudoku board, with integers [1-n] as the
-   *          known values, and '?' for unknown values. Defaults to std::cin.
+   * @param f The file from which we should read the n*n Sudoku board, with rows separated by
+   *          newlines, columns separated by spaces, integers [1-n] as the known values, and '?' for
+   *          unknown values.
+   * @return bool Whether the parsing succeeded.
    **/
-  void read_puzzle_from_file(std::istream& f = std::cin);
-
+  bool read_puzzle_from_file(std::istream& f);
   /**
-   * @brief Read in the puzzle from a n*n Sudoku board somewhere in memory and store it in another
-   *        location in memory.
+   * @brief Read in the puzzle from a given string representing the Sudoku board, and then store it
+   *        in memory.
    *
-   * @param cur_board A n*n Sudoku board, with integers [1-n] as the known values, and -1 for
+   * @param s A string containing a n*n Sudoku board, with rows separated by newlines, columns
+   *          separated by spaces, integers [1-n] as the known values, and '?' for unknown values.
    *                  unknown values.
+   * @return bool Whether the parsing succeeded.
    **/
-  void read_puzzle_from_memory(Grid& cur_grid);
+  bool read_puzzle_from_string(std::string const& s);
 
   /**
    * @brief Print the current state of the board to some output stream
    *
-   * @param out An output stream. Defaults to std::cout.
+   * @param out An output stream.
    **/
-  void print(std::ostream& out = std::cout);
+  void print(std::ostream& out);
 
   /**
    * @brief Attempt to solve the puzzle using the graph 9-coloring technique. If the puzzle was
@@ -65,17 +83,48 @@ public:
    **/
   bool solve_colorability_style();
 
+  //TODO: create a solve_bruteforce_style()  method
+
+  /**
+   * @brief Accessor for Sudoku::status_ok
+   *
+   * @return bool Whether the Sudoku board is ready to solve
+   **/
+  bool good() const;
+  /**
+   * @brief Inverse accessor for Sudoku::status_ok
+   *
+   * @return bool Whether the Sudoku board is NOT ready to solve
+   **/
+  bool bad() const;
+  /**
+   * @brief Implicit accessor for Sudoku::status_ok
+   *
+   * @return bool Whether the Sudoku board is ready to solve
+   **/
+  operator bool() const;
+
 private:
   /**
    * @brief Helper method for parsing a puzzle from a file
    *
    * @param f The file from which we are reading.
+   * @return bool Whether the parsing succeeded.
    **/
-  void parse_puzzle(std::istream& f);
+  bool parse_puzzle(std::istream& f);
+  /**
+   * @brief Helper method for parsing a single, tokenized row of a Sudoku grid
+   *
+   * @param tokens The row elements.
+   * @param y The index of the row.
+   * @return bool Whether the parsing succeeded.
+   **/
+  bool insert_row(std::vector<std::string>& tokens, std::size_t y);
   /**
    * @brief Helper method for checking whether the given puzzle is solvable
+   * @return bool Whether the validation succeeded
    **/
-  void validate();
+  bool validate();
 
   /**
    * @brief Helper method for printing a game board to an output stream.
@@ -113,6 +162,11 @@ private:
    * @brief The Sudoku board, which we are saving in memory.
    **/
   Grid grid;
+
+  /**
+   * @brief Whether the board is initialized (i.e., can we operate on this object?)
+   **/
+  bool status_ok;
 };
 
 #endif // SUDOKU_H

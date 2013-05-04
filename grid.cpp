@@ -48,6 +48,12 @@ std::size_t Grid::n() const
   return this->dim;
 }
 
+void Grid::reset(std::size_t n)
+{
+  this->matrix.resize(boost::extents[n][n]);
+  this->dim = n;
+}
+
 Grid::~Grid()
 {
 }

@@ -20,87 +20,146 @@
 #include "validator.h"
 
 #include <stdexcept>
-#include <vector>
+#include <sstream>
 #include <algorithm>
 #include <boost/algorithm/string.hpp>
 
-Sudoku::Sudoku() : grid(9)
+Sudoku::Sudoku() : grid(0), status_ok(false)
 {
 }
 
-void Sudoku::parse_puzzle(std::istream& f)
+bool Sudoku::insert_row(std::vector<std::string>& tokens, std::size_t y)
 {
-  //read n lines
-  for (std::size_t y = 0; y < this->grid.n(); y++)
+  for (std::size_t x = 0; x < this->grid.n(); x++)
   {
-    std::string line;
+    std::string const& token = tokens[x];
+
+    try
+    {
+      int value = std::stoi(token);
+
+      //integer tokens must be between 1 and n, and unknowns should be question marks
+      if (value < 1 || value > (int)this->grid.n())
+      {
+        //invalid value in board
+        return false;
+      }
+      else
+      {
+        this->grid.set(x, y, value);
+      }
+    }
+    catch (std::invalid_argument &)
+    {
+      if (token == "?")
+      {
+        this->grid.set(x, y, -1);
+      }
+      else
+      {
+        //invalid character in board
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
+bool Sudoku::parse_puzzle(std::istream& f)
+{
+  std::string line;
+  std::vector<std::string> tokens;
+
+  //read the first line, to figure out n
+  std::getline(f, line);
+  boost::split(tokens, line, boost::is_any_of(" "));
+  std::size_t n = tokens.size();
+
+  if (n == 0 || line.empty())
+  {
+    //empty puzzle
+    return false;
+  }
+
+  //make sure n is a perfect square
+  std::size_t n_sq = std::size_t(sqrt(n));
+
+  if (n_sq * n_sq != n && (n_sq + 1) * (n_sq + 1) != n)
+  {
+    //n is not a perfect square
+    return false;
+  }
+
+  //create the n*n grid
+  this->grid.reset(n);
+
+  //put in the first row
+  this->insert_row(tokens, 0);
+
+  //read n-1 lines
+  for (std::size_t y = 1; y < n; y++)
+  {
     std::getline(f, line);
-    std::vector<std::string> tokens;
     boost::split(tokens, line, boost::is_any_of(" "));
 
     //each line must have n tokens
-    if (tokens.size() == this->grid.n())
+    if (tokens.size() != n)
     {
-      for (std::size_t x = 0; x < this->grid.n(); x++)
-      {
-        std::string const& token = tokens[x];
-
-        try
-        {
-          int value = std::stoi(token);
-
-          //integer tokens must be between 1 and n, and unknowns should be question marks
-          if (value < 1 || value > (int)this->grid.n())
-          {
-            throw std::runtime_error("Invalid value in board");
-          }
-          else
-          {
-            this->grid.set(x, y, value);
-          }
-        }
-        catch (std::invalid_argument &)
-        {
-          if (token == "?")
-          {
-            this->grid.set(x, y, -1);
-          }
-          else
-          {
-            throw std::runtime_error("Invalid character in board");
-          }
-        }
-      }
+      //invalid board
+      return false;
     }
-    else
-    {
-      throw std::runtime_error("Invalid board");
-    }
+
+    //insert that row
+    this->insert_row(tokens, y);
   }
+
+  return true;
 }
 
-void Sudoku::validate()
+bool Sudoku::validate()
 {
-  if (!Validator::is_good_partial_board(this->grid))
+  //whether this board is solvable
+  return Validator::is_good_partial_board(this->grid);
+}
+
+bool Sudoku::read_puzzle_from_file(std::istream& f)
+{
+  if (this->parse_puzzle(f))
   {
-    throw std::runtime_error("This board is unsolvable!");
+    if (this->validate())
+    {
+      this->status_ok = true;
+      return true;
+    }
   }
+
+  return false;
 }
 
-void Sudoku::read_puzzle_from_file(std::istream& f)
+bool Sudoku::read_puzzle_from_string(std::string const& s)
 {
-  this->parse_puzzle(f);
-  this->validate();
-}
+  std::stringstream iss(s);
 
-void Sudoku::read_puzzle_from_memory(Grid& cur_grid)
-{
-  this->grid = cur_grid;
-  this->validate();
+  if (this->parse_puzzle(iss))
+  {
+    if (this->validate())
+    {
+      this->status_ok = true;
+      return true;
+    }
+  }
+
+  return false;
 }
 
 void Sudoku::print(std::ostream& out)
 {
+  if (!this->status_ok)
+  {
+    throw std::logic_error("Puzzle has not been initialized");
+  }
+
   this->dump(this->grid, out);
 }
 
@@ -189,7 +248,27 @@ bool Sudoku::color_node(Grid& cur_grid, std::size_t cur_x, std::size_t cur_y)
 
 bool Sudoku::solve_colorability_style()
 {
+  if (!this->status_ok)
+  {
+    throw std::logic_error("Puzzle has not been initialized");
+  }
+
   return color_node(this->grid);
+}
+
+bool Sudoku::good() const
+{
+  return this->status_ok;
+}
+
+bool Sudoku::bad() const
+{
+  return !this->good();
+}
+
+Sudoku::operator bool() const
+{
+  return this->good();
 }
 
 Sudoku::~Sudoku()

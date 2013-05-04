@@ -26,18 +26,14 @@
 
 class Validator
 {
-/*
- * A board is defined as "good" if every row has the digits 1-n used exactly once, if every column
- * has the digits 1-n used exactly once, and if every 3x3 block has the digits 1-n used exactly
- * once. Basically, this function is just checking whether the given board is a solution to some
- * Sudoku puzzle.
- *
- * This function can be used when solving a Sudoku puzzle with the brute force method, the graph
- * n-colorability method, and many other solution methods.
- */
 public:
   /**
    * @brief Tells you whether a Sudoku puzzle has been solved.
+   * 
+   * A board is defined as "good" if every row has the digits 1-n used exactly once, if every column
+   * has the digits 1-n used exactly once, and if every 3x3 block has the digits 1-n used exactly
+   * once. Basically, this function is just checking whether the given board is a solution to some
+   * Sudoku puzzle.
    *
    * @param cur_board A Sudoku puzzle board.
    * @return bool Whether that puzzle has been solved.
@@ -70,18 +66,13 @@ private:
    **/
   static bool is_good_block(Grid const& cur_grid, std::size_t x, std::size_t y);
 
-/*
- * Check whether a specific node can be colored in a particular way. This validation will tell you
- * whether you can use a specific color, provided that it does not appear in the same row, in the
- * same column, or the same 3x3 block.
- *
- * This function is used when solving a Sudoku puzzle with the graph n-colorability method (as the
- * function's name implies).
- */
 public:
   /**
    * @brief Tells you whether you can color a certain node in a certain way (i.e., is it okay to use
    *        a particular number in this Sudoku cell?)
+   * 
+   * This validation will tell you whether you can use a specific color, provided that it does not
+   * appear in the same row, in the same column, or the same 3x3 block.
    *
    * @param cur_board A Sudoku puzzle board.
    * @param x The x position of the cell.
@@ -93,9 +84,12 @@ public:
 
   /**
    * @brief Tells you which colors a certain node may use (i.e., which numbers can I put in this
-   *        Sudoku cell?). The result is encoded into a 64-bit unsigned integer, with the least
-   *        significant bit corresponding to whether you can use the color 1, the next bit
-   *        corresponding to whether you can use the number 2, and so on.
+   *        Sudoku cell?).
+   * 
+   * This validation will tell you whether you can use a specific color, provided that it does not
+   * appear in the same row, in the same column, or the same 3x3 block. The result is encoded into a
+   * 64-bit unsigned integer, with the least significant bit corresponding to whether you can use
+   * the color 1, the next bit corresponding to whether you can use the number 2, and so on.
    *
    * @param cur_board A Sudoku puzzle board.
    * @param x The x position of the cell.
@@ -130,18 +124,17 @@ private:
    **/
   static std::uint_fast64_t block_colors(Grid const& cur_grid, std::size_t x, std::size_t y);
 
-/*
- * A partially-completed board is defined as "good" if every row has the digits 1-n used at most
- * once, if every column has the digits 1-n used at most once, and if every 3x3 block has the digits
- * 1-n used at most once. Basically, this function is just checking whether the given board is a
- * solvable Sudoku puzzle.
- *
- * This function can be used when solving a Sudoku puzzle with the graph n-colorability method, and
- * many other solution methods.
- */
 public:
   /**
    * @brief Tells you if a given Sudoku board has a solution (if it has no repeats, then it does).
+   * 
+   * A partially-completed board is defined as "good" if every row has the digits 1-n used at most
+   * once, if every column has the digits 1-n used at most once, and if every 3x3 block has the digits
+   * 1-n used at most once. Basically, this function is just checking whether the given board is a
+   * solvable Sudoku puzzle.
+   *
+   * This function can be used when solving a Sudoku puzzle with the graph n-colorability method, and
+   * many other solution methods.
    *
    * @param cur_board A Sudoku puzzle board.
    * @return bool Whether the given board has any solutions.
