@@ -7,4 +7,4 @@ set(sudoku_SRCS main.cpp sudoku.cpp validator.cpp grid.cpp)
 add_executable(sudoku ${sudoku_SRCS})
 
 install(TARGETS sudoku RUNTIME DESTINATION bin)
-set(CMAKE_CXX_FLAGS "--std=c++11 -O2")
+set(CMAKE_CXX_FLAGS "--std=c++11 -O2 -Wall")
