@@ -19,6 +19,7 @@
 #ifndef GRID_H
 #define GRID_H
 
+#include <cstddef>
 #include <boost/multi_array.hpp>
 
 /**

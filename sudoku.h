@@ -19,6 +19,7 @@
 #ifndef SUDOKU_H
 #define SUDOKU_H
 
+#include <cstddef>
 #include <streambuf>
 #include <string>
 #include <vector>
@@ -35,6 +36,14 @@
  * is dealing with, it can start solving the puzzle: just call one of the solver methods. These
  * methods include: solve_colorability_style() and solve_bruteforce_style(). Once you call one of
  * those methods, the solution to the puzzle will be saved in the object.
+ * 
+ * Please note that due to memory constraints, this class can only ever hope to solve puzzles up to
+ * size 64*64. The actual Sudoku grid validations are performed by using bit hacks on 64-bit
+ * unsigned integers, so anything over 64 would cause an overflow. However, it is certainly not
+ * realistic to expect a solution for such a large board: if even a quarter of the cells in a 64*64
+ * board were unknown, there would be over 1000 unknowns, which means there would be over 1000
+ * recursive function calls, each one taking up a portion of the stack and each one attempting to
+ * allocate memory on the heap. This would lead to a stack or heap overflow (memory exhaustion).
  **/
 class Sudoku
 {

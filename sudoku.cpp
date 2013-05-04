@@ -91,6 +91,14 @@ bool Sudoku::parse_puzzle(std::istream& f)
     return false;
   }
 
+  //make sure n is not too big
+
+  if (n > 64)
+  {
+    //the board cannot be solved with this program
+    return false;
+  }
+
   //create the n*n grid
   this->grid.reset(n);
 
