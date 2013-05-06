@@ -37,17 +37,15 @@ int main(int argc, char* argv[])
   std::cout << "Here's the current state of the board." << std::endl;
   puzzle.print(std::cout);
 
-  std::cout << "Attempting to solve the puzzle..." << std::endl;
+  std::cout << "Does it have a single solution? " << std::endl;
+  std::cout << std::boolalpha << puzzle.singular() << std::endl;
 
-  if (puzzle.solve_colorability_style())
-  {
-    std::cout << "A solution was found!" << std::endl;
-    puzzle.print(std::cout);
-  }
-  else
-  {
-    std::cout << "No solutions exist." << std::endl;
-  }
+  std::cout << "Solving the puzzle..." << std::endl;
+
+  puzzle.solve_colorability_style();
+
+  std::cout << "A solution was found!" << std::endl;
+  puzzle.print(std::cout);
 
   return 0;
 }

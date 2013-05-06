@@ -43,7 +43,7 @@
  * realistic to expect a solution for such a large board: if even a quarter of the cells in a 64*64
  * board were unknown, there would be over 1000 unknowns, which means there would be over 1000
  * recursive function calls, each one taking up a portion of the stack and each one attempting to
- * allocate memory on the heap. This would lead to a stack or heap overflow (memory exhaustion).
+ * allocate memory on the heap. This could lead to a stack or heap overflow (memory exhaustion).
  **/
 class Sudoku
 {
@@ -88,18 +88,29 @@ public:
    **/
   std::string to_s() const;
 
+  /**
+   * @brief Determine whether the puzzle has only a single solution by using the graph 9-coloring
+   *        technique. If there are no solutions or multiple solutions, the method will return true.
+   *
+   * @return bool Whether the Sudoku board has only 1 solution.
+   **/
+  bool singular();
 
   /**
    * @brief Attempt to solve the puzzle using the graph 9-coloring technique. If the puzzle was
    *        successfully solved, then the solution will be saved to memory (overwriting the existing
    *        grid) and the method will return true. If the puzzle could not be solved for whatever
    *        reason, then this method will return false.
-   *
-   * @return bool Whether we were able to solve the puzzle.
    **/
-  bool solve_colorability_style();
-
-  //TODO: create a solve_bruteforce_style()  method
+  void solve_colorability_style();
+  /**
+   * @brief Attempt to solve the puzzle by brute force. If the puzzle was successfully solved, then
+   *        the solution will be saved to memory (overwriting the existing grid) and the method will
+   *        return true. If the puzzle could not be solved for whatever reason, then this method
+   *        will return false. Note that this approach will take a very, very long time. However, it
+   *        will EVENTUALLY find a solution.
+   **/
+  void solve_bruteforce_style();
 
   /**
    * @brief Accessor for Sudoku::status_ok
@@ -140,20 +151,21 @@ private:
    * @brief Helper method for checking whether the given puzzle is solvable
    * @return bool Whether the validation succeeded
    **/
-  bool validate();
+  bool validate() const;
 
   /**
-   * @brief Helper method for finding the next unmarked (i.e., undetermined) Sudoku grid.
+   * @brief Helper method for finding the next unknown (i.e., undetermined) Sudoku cell.
    *
    * @param cur_board The Sudoku game board.
    * @param cur_x The last x position considered on the game board.
    * @param cur_y The last y position considered on the game board.
-   * @param x_out The x position of the next uncolored cell.
-   * @param y_out The y position of the next uncolored cell.
-   * @return bool Whether we were able to find an uncolored node.
+   * @param x_out The x position of the next unknown cell.
+   * @param y_out The y position of the next unknown cell.
+   * @return bool Whether we were able to find an unknown cell.
    **/
-  static bool find_uncolored(Grid& cur_grid, std::size_t cur_x, std::size_t cur_y,
+  static bool find_unknown(Grid& cur_grid, std::size_t cur_x, std::size_t cur_y,
     std::size_t& x_out, std::size_t& y_out);
+
   /**
    * @brief Helper method for solving an instance of a Sudoku puzzle using the graph 9-colorability
    *        solution method. If a 9-coloring is found, the method will return true and overwrite
@@ -165,6 +177,20 @@ private:
    * @return bool Whether we were able to find a 9-coloring for the Sudoku board.
    **/
   static bool color_node(Grid& cur_grid, std::size_t cur_x = 0, std::size_t cur_y = 0);
+  /**
+   * @brief Helper method for solving an instance of a Sudoku puzzle using the bruteforce solution
+   *        method. If a solution is found, the method will return true and overwrite cur_board with
+   *        the solution.
+   *
+   * @param cur_grid ...
+   * @param cur_x ... Defaults to 0.
+   * @param cur_y ... Defaults to 0.
+   * @return bool
+   **/
+  static bool bruteforce_node(Grid& cur_grid, std::size_t cur_x = 0, std::size_t cur_y = 0);
+
+  static int singular_decider(Grid& cur_grid, bool found_one = false, std::size_t cur_x = 0,
+                               std::size_t cur_y = 0);
 
   /**
    * @brief The Sudoku board, which we are saving in memory.
