@@ -16,7 +16,7 @@
     ? ? 1 ? ? ? ? 6 8
     ? ? 8 5 ? ? ? 1 ?
     ? 9 ? ? ? ? 4 ? ?
-    $ ./sudoku &amp;lt; data8-hard-inkala.txt
+    $ ./sudoku < data8-hard-inkala.txt
     Read the board in OK.
     Here's the current state of the board.
     8 ? ? ? ? ? ? ? ?
@@ -28,6 +28,7 @@
     ? ? 1 ? ? ? ? 6 8
     ? ? 8 5 ? ? ? 1 ?
     ? 9 ? ? ? ? 4 ? ?
+
     Solving the puzzle...
     A solution was found!
     8 1 2 7 5 3 6 4 9
@@ -40,7 +41,7 @@
     4 3 8 5 2 6 9 1 7
     7 9 6 3 1 8 4 5 2
 
-This is solving [one of the world's hardest Sudoku puzzles](http://www.mirror.co.uk/news/weird-news/worlds-hardest-sudoku-can-you-242294\. in a couple dozen milliseconds.
+This is solving [one of the world's hardest Sudoku puzzles](http://www.mirror.co.uk/news/weird-news/worlds-hardest-sudoku-can-you-242294) in a couple dozen milliseconds.
 
 ### Web Solver
 
