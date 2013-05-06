@@ -46,3 +46,9 @@ This is solving [one of the world's hardest Sudoku puzzles](http://www.mirror.co
 ### Web Solver
 
 You can also solve Sudoku puzzles online using a web app I created. It is built on top of Ruby on Rails and `sudoku_base`. I actually wrote a Ruby Gem that makes use of the code in `sudoku_base`, so if you want to make your own puzzle solver in Ruby, that's fine too.
+
+Here is the link to the Ruby Gem source code, if you are interested: https://github.com/nealp9084/sudoku_gem . If you are having trouble building it, make sure you have the boost development headers installed.
+
+Here is the link to the web app source code, if you are interested: https://github.com/nealp9084/sudoku_webapp . Since it is a demo, it does not have a lot of features, but it gets the job done.
+
+Last but not least, here is the actual web app: https://www.epicdomain.name
