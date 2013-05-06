@@ -18,6 +18,8 @@
 
 #include "grid.h"
 
+#include <sstream>
+
 Grid::Grid(std::size_t n) : matrix(boost::extents[n][n]), dim(n)
 {
 }
@@ -52,6 +54,34 @@ void Grid::reset(std::size_t n)
 {
   this->matrix.resize(boost::extents[n][n]);
   this->dim = n;
+}
+
+std::string Grid::to_s() const
+{
+  std::stringstream out;
+  this->to_s(out);
+  return out.str();
+}
+
+void Grid::to_s(std::ostream& out) const
+{
+  for (std::size_t y = 0; y < this->dim; y++)
+  {
+    if (y != 0)
+    {
+      out << std::endl;
+    }
+
+    for (std::size_t x = 0; x < this->dim; x++)
+    {
+      if (x != 0)
+      {
+        out << ' ';
+      }
+
+      out << this->matrix[y][x];
+    }
+  }
 }
 
 Grid::~Grid()

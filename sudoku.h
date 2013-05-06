@@ -76,11 +76,18 @@ public:
   bool read_puzzle_from_string(std::string const& s);
 
   /**
-   * @brief Print the current state of the board to some output stream
+   * @brief Print the current state of the board to some output stream.
    *
    * @param out An output stream.
    **/
-  void print(std::ostream& out);
+  void print(std::ostream& out) const;
+  /**
+   * @brief Return the current state of the board as a human-readable string.
+   *
+   * @return std::string The human-readable representation of the board.
+   **/
+  std::string to_s() const;
+
 
   /**
    * @brief Attempt to solve the puzzle using the graph 9-coloring technique. If the puzzle was
@@ -134,14 +141,6 @@ private:
    * @return bool Whether the validation succeeded
    **/
   bool validate();
-
-  /**
-   * @brief Helper method for printing a game board to an output stream.
-   *
-   * @param cur_board A Sudoku board, either an incomplete or complete puzzle.
-   * @param out An output stream.
-   **/
-  static void dump(Grid& cur_grid, std::ostream& out);
 
   /**
    * @brief Helper method for finding the next unmarked (i.e., undetermined) Sudoku grid.

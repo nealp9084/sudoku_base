@@ -20,6 +20,8 @@
 #define GRID_H
 
 #include <cstddef>
+#include <string>
+#include <streambuf>
 #include <boost/multi_array.hpp>
 
 /**
@@ -85,6 +87,19 @@ public:
    * @return std::size_t The side-length.
    **/
   std::size_t n() const;
+  
+  /**
+   * @brief Show the grid in a human-readable form.
+   *
+   * @return std::string The grid.
+   **/
+  std::string to_s() const;
+  /**
+   * @brief Convert the grid to a human-readable form and pipe that into the given output stream.
+   *
+   * @param out The output stream.
+   **/
+  void to_s(std::ostream& out) const;
 
 private:
   /**

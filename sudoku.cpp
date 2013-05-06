@@ -161,40 +161,21 @@ bool Sudoku::read_puzzle_from_string(std::string const& s)
   return false;
 }
 
-void Sudoku::print(std::ostream& out)
+void Sudoku::print(std::ostream& out) const
 {
   if (!this->status_ok)
   {
     throw std::logic_error("Puzzle has not been initialized");
   }
 
-  this->dump(this->grid, out);
+  out << this->to_s() << std::endl;
 }
 
-void Sudoku::dump(Grid& cur_grid, std::ostream& out)
+std::string Sudoku::to_s() const
 {
-  for (std::size_t y = 0; y < cur_grid.n(); y++)
-  {
-    for (std::size_t x = 0; x < cur_grid.n(); x++)
-    {
-      if (x != 0)
-      {
-        out << ' ';
-      }
-
-      int a = cur_grid.get(x, y);
-
-      if (a == -1)
-      {
-        out << '?';
-      }
-      else
-      {
-        out << a;
-      }
-    }
-    out << std::endl;
-  }
+  std::string str = this->grid.to_s();
+  boost::replace_all(str, "-1", "?");
+  return str;
 }
 
 bool Sudoku::find_uncolored(Grid& cur_grid, std::size_t cur_x, std::size_t cur_y,
